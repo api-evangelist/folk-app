@@ -1,0 +1,338 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Folk External API",
+    "version": "2025-06-09"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{apiKey}}"
+    }
+  },
+  "items": [
+    {
+      "info": { "name": "People", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "List people.", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://api.folk.app/v1/people",
+            "params": [
+              { "name": "limit", "value": "20", "type": "query", "description": "Number of items to return." },
+              { "name": "cursor", "value": "", "type": "query", "description": "Pagination cursor." }
+            ]
+          },
+          "docs": "Lists people (contacts) in the workspace, cursor-paginated."
+        },
+        {
+          "info": { "name": "Create a person.", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://api.folk.app/v1/people",
+            "body": { "type": "json", "data": "{\n  \"firstName\": \"Jane\",\n  \"lastName\": \"Doe\",\n  \"emails\": [\"jane@example.com\"]\n}" }
+          },
+          "docs": "Creates a new person."
+        },
+        {
+          "info": { "name": "Get a person.", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://api.folk.app/v1/people/:personId",
+            "params": [ { "name": "personId", "value": "", "type": "path", "description": "The ID of the person." } ]
+          },
+          "docs": "Retrieves a person by ID."
+        },
+        {
+          "info": { "name": "Update a person.", "type": "http" },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.folk.app/v1/people/:personId",
+            "params": [ { "name": "personId", "value": "", "type": "path", "description": "The ID of the person." } ],
+            "body": { "type": "json", "data": "{}" }
+          },
+          "docs": "Updates an existing person."
+        },
+        {
+          "info": { "name": "Delete a person.", "type": "http" },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.folk.app/v1/people/:personId",
+            "params": [ { "name": "personId", "value": "", "type": "path", "description": "The ID of the person." } ]
+          },
+          "docs": "Deletes a person."
+        },
+        {
+          "info": { "name": "Search for people.", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://api.folk.app/v1/people/search",
+            "body": { "type": "json", "data": "{\n  \"combinator\": \"and\",\n  \"filters\": []\n}" }
+          },
+          "docs": "Searches for people using filters."
+        }
+      ]
+    },
+    {
+      "info": { "name": "Companies", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "List companies.", "type": "http" },
+          "http": { "method": "GET", "url": "https://api.folk.app/v1/companies", "params": [ { "name": "limit", "value": "20", "type": "query", "description": "Number of items to return." } ] },
+          "docs": "Lists companies in the workspace."
+        },
+        {
+          "info": { "name": "Create a company.", "type": "http" },
+          "http": { "method": "POST", "url": "https://api.folk.app/v1/companies", "body": { "type": "json", "data": "{\n  \"name\": \"Acme Inc\"\n}" } },
+          "docs": "Creates a new company."
+        },
+        {
+          "info": { "name": "Get a company.", "type": "http" },
+          "http": { "method": "GET", "url": "https://api.folk.app/v1/companies/:companyId", "params": [ { "name": "companyId", "value": "", "type": "path", "description": "The ID of the company." } ] },
+          "docs": "Retrieves a company by ID."
+        },
+        {
+          "info": { "name": "Update a company.", "type": "http" },
+          "http": { "method": "PATCH", "url": "https://api.folk.app/v1/companies/:companyId", "params": [ { "name": "companyId", "value": "", "type": "path", "description": "The ID of the company." } ], "body": { "type": "json", "data": "{}" } },
+          "docs": "Updates an existing company."
+        },
+        {
+          "info": { "name": "Delete a company.", "type": "http" },
+          "http": { "method": "DELETE", "url": "https://api.folk.app/v1/companies/:companyId", "params": [ { "name": "companyId", "value": "", "type": "path", "description": "The ID of the company." } ] },
+          "docs": "Deletes a company."
+        },
+        {
+          "info": { "name": "Search for companies.", "type": "http" },
+          "http": { "method": "POST", "url": "https://api.folk.app/v1/companies/search", "body": { "type": "json", "data": "{\n  \"combinator\": \"and\",\n  \"filters\": []\n}" } },
+          "docs": "Searches for companies using filters."
+        }
+      ]
+    },
+    {
+      "info": { "name": "Groups", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "List groups.", "type": "http" },
+          "http": { "method": "GET", "url": "https://api.folk.app/v1/groups" },
+          "docs": "Lists the groups in the workspace."
+        },
+        {
+          "info": { "name": "List group custom fields.", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://api.folk.app/v1/groups/:groupId/custom-fields/:entityType",
+            "params": [
+              { "name": "groupId", "value": "", "type": "path", "description": "The ID of the group." },
+              { "name": "entityType", "value": "person", "type": "path", "description": "person, company, or object." }
+            ]
+          },
+          "docs": "Lists the custom fields defined on a group for an entity type."
+        }
+      ]
+    },
+    {
+      "info": { "name": "Deals and Custom Objects", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "List deals.", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://api.folk.app/v1/groups/:groupId/:objectType",
+            "params": [
+              { "name": "groupId", "value": "", "type": "path", "description": "The ID of the group." },
+              { "name": "objectType", "value": "deals", "type": "path", "description": "The object type, e.g. deals." }
+            ]
+          },
+          "docs": "Lists deals or other group-scoped objects."
+        },
+        {
+          "info": { "name": "Create a deal.", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://api.folk.app/v1/groups/:groupId/:objectType",
+            "params": [
+              { "name": "groupId", "value": "", "type": "path", "description": "The ID of the group." },
+              { "name": "objectType", "value": "deals", "type": "path", "description": "The object type, e.g. deals." }
+            ],
+            "body": { "type": "json", "data": "{\n  \"name\": \"New deal\"\n}" }
+          },
+          "docs": "Creates a deal or other group-scoped object."
+        },
+        {
+          "info": { "name": "Get a deal.", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://api.folk.app/v1/groups/:groupId/:objectType/:objectId",
+            "params": [
+              { "name": "groupId", "value": "", "type": "path", "description": "The ID of the group." },
+              { "name": "objectType", "value": "deals", "type": "path", "description": "The object type." },
+              { "name": "objectId", "value": "", "type": "path", "description": "The ID of the object." }
+            ]
+          },
+          "docs": "Retrieves a deal or object by ID."
+        },
+        {
+          "info": { "name": "Update a deal.", "type": "http" },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.folk.app/v1/groups/:groupId/:objectType/:objectId",
+            "params": [
+              { "name": "groupId", "value": "", "type": "path", "description": "The ID of the group." },
+              { "name": "objectType", "value": "deals", "type": "path", "description": "The object type." },
+              { "name": "objectId", "value": "", "type": "path", "description": "The ID of the object." }
+            ],
+            "body": { "type": "json", "data": "{}" }
+          },
+          "docs": "Updates a deal or object."
+        },
+        {
+          "info": { "name": "Delete a deal.", "type": "http" },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.folk.app/v1/groups/:groupId/:objectType/:objectId",
+            "params": [
+              { "name": "groupId", "value": "", "type": "path", "description": "The ID of the group." },
+              { "name": "objectType", "value": "deals", "type": "path", "description": "The object type." },
+              { "name": "objectId", "value": "", "type": "path", "description": "The ID of the object." }
+            ]
+          },
+          "docs": "Deletes a deal or object."
+        },
+        {
+          "info": { "name": "Search deals.", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://api.folk.app/v1/groups/:groupId/:objectType/search",
+            "params": [
+              { "name": "groupId", "value": "", "type": "path", "description": "The ID of the group." },
+              { "name": "objectType", "value": "deals", "type": "path", "description": "The object type." }
+            ],
+            "body": { "type": "json", "data": "{\n  \"combinator\": \"and\",\n  \"filters\": []\n}" }
+          },
+          "docs": "Searches deals or other group-scoped objects."
+        }
+      ]
+    },
+    {
+      "info": { "name": "Notes", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "List notes.", "type": "http" },
+          "http": { "method": "GET", "url": "https://api.folk.app/v1/notes", "params": [ { "name": "limit", "value": "20", "type": "query", "description": "Number of items to return." } ] },
+          "docs": "Lists notes."
+        },
+        {
+          "info": { "name": "Create a note.", "type": "http" },
+          "http": { "method": "POST", "url": "https://api.folk.app/v1/notes", "body": { "type": "json", "data": "{\n  \"content\": \"Followed up over email\",\n  \"entityType\": \"person\",\n  \"entityId\": \"\"\n}" } },
+          "docs": "Creates a note."
+        },
+        {
+          "info": { "name": "Get a note.", "type": "http" },
+          "http": { "method": "GET", "url": "https://api.folk.app/v1/notes/:noteId", "params": [ { "name": "noteId", "value": "", "type": "path", "description": "The ID of the note." } ] },
+          "docs": "Retrieves a note by ID."
+        },
+        {
+          "info": { "name": "Update a note.", "type": "http" },
+          "http": { "method": "PATCH", "url": "https://api.folk.app/v1/notes/:noteId", "params": [ { "name": "noteId", "value": "", "type": "path", "description": "The ID of the note." } ], "body": { "type": "json", "data": "{}" } },
+          "docs": "Updates a note."
+        },
+        {
+          "info": { "name": "Delete a note.", "type": "http" },
+          "http": { "method": "DELETE", "url": "https://api.folk.app/v1/notes/:noteId", "params": [ { "name": "noteId", "value": "", "type": "path", "description": "The ID of the note." } ] },
+          "docs": "Deletes a note."
+        }
+      ]
+    },
+    {
+      "info": { "name": "Reminders", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "List reminders.", "type": "http" },
+          "http": { "method": "GET", "url": "https://api.folk.app/v1/reminders", "params": [ { "name": "limit", "value": "20", "type": "query", "description": "Number of items to return." } ] },
+          "docs": "Lists reminders."
+        },
+        {
+          "info": { "name": "Create a reminder.", "type": "http" },
+          "http": { "method": "POST", "url": "https://api.folk.app/v1/reminders", "body": { "type": "json", "data": "{\n  \"title\": \"Check in with Jane\",\n  \"dueAt\": \"2026-08-01T09:00:00Z\",\n  \"entityType\": \"person\",\n  \"entityId\": \"\"\n}" } },
+          "docs": "Creates a reminder."
+        },
+        {
+          "info": { "name": "Get a reminder.", "type": "http" },
+          "http": { "method": "GET", "url": "https://api.folk.app/v1/reminders/:reminderId", "params": [ { "name": "reminderId", "value": "", "type": "path", "description": "The ID of the reminder." } ] },
+          "docs": "Retrieves a reminder by ID."
+        },
+        {
+          "info": { "name": "Update a reminder.", "type": "http" },
+          "http": { "method": "PATCH", "url": "https://api.folk.app/v1/reminders/:reminderId", "params": [ { "name": "reminderId", "value": "", "type": "path", "description": "The ID of the reminder." } ], "body": { "type": "json", "data": "{}" } },
+          "docs": "Updates a reminder."
+        },
+        {
+          "info": { "name": "Delete a reminder.", "type": "http" },
+          "http": { "method": "DELETE", "url": "https://api.folk.app/v1/reminders/:reminderId", "params": [ { "name": "reminderId", "value": "", "type": "path", "description": "The ID of the reminder." } ] },
+          "docs": "Deletes a reminder."
+        }
+      ]
+    },
+    {
+      "info": { "name": "Interactions", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "Create an interaction.", "type": "http" },
+          "http": { "method": "POST", "url": "https://api.folk.app/v1/interactions", "body": { "type": "json", "data": "{\n  \"type\": \"email\",\n  \"entityType\": \"person\",\n  \"entityId\": \"\",\n  \"occurredAt\": \"2026-07-02T12:00:00Z\"\n}" } },
+          "docs": "Records an interaction against a contact."
+        }
+      ]
+    },
+    {
+      "info": { "name": "Users", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "List users.", "type": "http" },
+          "http": { "method": "GET", "url": "https://api.folk.app/v1/users" },
+          "docs": "Lists the users (members) in the workspace."
+        },
+        {
+          "info": { "name": "Get the current user.", "type": "http" },
+          "http": { "method": "GET", "url": "https://api.folk.app/v1/users/me" },
+          "docs": "Gets the current authenticated user behind the API key."
+        },
+        {
+          "info": { "name": "Get a user.", "type": "http" },
+          "http": { "method": "GET", "url": "https://api.folk.app/v1/users/:userId", "params": [ { "name": "userId", "value": "", "type": "path", "description": "The ID of the user." } ] },
+          "docs": "Retrieves a user by ID."
+        }
+      ]
+    },
+    {
+      "info": { "name": "Webhooks", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "List webhooks.", "type": "http" },
+          "http": { "method": "GET", "url": "https://api.folk.app/v1/webhooks" },
+          "docs": "Lists webhooks."
+        },
+        {
+          "info": { "name": "Create a webhook.", "type": "http" },
+          "http": { "method": "POST", "url": "https://api.folk.app/v1/webhooks", "body": { "type": "json", "data": "{\n  \"name\": \"My app integration\",\n  \"targetUrl\": \"https://my-app.com/webhook\",\n  \"subscribedEvents\": [{ \"eventType\": \"person.created\" }]\n}" } },
+          "docs": "Creates a webhook and returns its signing secret."
+        },
+        {
+          "info": { "name": "Get a webhook.", "type": "http" },
+          "http": { "method": "GET", "url": "https://api.folk.app/v1/webhooks/:webhookId", "params": [ { "name": "webhookId", "value": "", "type": "path", "description": "The ID of the webhook." } ] },
+          "docs": "Retrieves a webhook by ID."
+        },
+        {
+          "info": { "name": "Update a webhook.", "type": "http" },
+          "http": { "method": "PATCH", "url": "https://api.folk.app/v1/webhooks/:webhookId", "params": [ { "name": "webhookId", "value": "", "type": "path", "description": "The ID of the webhook." } ], "body": { "type": "json", "data": "{}" } },
+          "docs": "Updates a webhook."
+        },
+        {
+          "info": { "name": "Delete a webhook.", "type": "http" },
+          "http": { "method": "DELETE", "url": "https://api.folk.app/v1/webhooks/:webhookId", "params": [ { "name": "webhookId", "value": "", "type": "path", "description": "The ID of the webhook." } ] },
+          "docs": "Deletes a webhook."
+        }
+      ]
+    }
+  ]
+}

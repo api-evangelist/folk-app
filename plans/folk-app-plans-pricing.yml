@@ -1,0 +1,171 @@
+specification: API Commons Plans
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/Plans
+provider: Folk
+providerId: folk-app
+created: '2026-07-02'
+modified: '2026-07-02'
+reconciled: false
+tags:
+- CRM
+- Relationships
+- Contacts
+- Sales
+- Plans
+description: >-
+  Folk is priced per seat (per user) with monthly or annual billing, and offers
+  a two-week free trial with no credit card required. The published tiers are
+  Standard, Premium, and Enterprise. REST API access is NOT included on Standard -
+  it is a Premium (and Enterprise) feature - so programmatic access to the Folk
+  External API requires at least a Premium seat. Custom objects with deal
+  management, email sequences, dashboards, and advanced roles/permissions also
+  begin at Premium. Prices below reflect Folk's public pricing page as of
+  2026-07-02 and should be re-verified during reconciliation.
+notes: >-
+  Per-seat prices: Standard $30/mo or $24/mo billed annually; Premium $60/mo or
+  $48/mo billed annually; Enterprise from $100/mo (from $80/mo annually). API
+  access requires Premium or Enterprise. Verify current numbers at
+  https://www.folk.app/pricing.
+sources:
+- https://www.folk.app/pricing
+- https://help.folk.app/en/articles/6600210-pricing-plans
+- https://developer.folk.app/api-reference/authentication
+plans:
+- id: folk-standard
+  name: Standard
+  type: paid
+  description: >-
+    Per-seat plan with pipeline management, email campaigns (up to 2,000 sends
+    per user per month), the folkX Chrome extension, email/calendar/WhatsApp
+    sync, contact enrichment, AI Assistants, Magic Fields, and 5,000+
+    integrations via Zapier and Make. Does NOT include REST API access.
+  entries:
+  - label: Standard Seat (Annual)
+    name: standard_seat_annual
+    type: flat
+    metric: seat
+    limit: -1
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: 24.00
+    currency: USD
+    userMultiplied: true
+  - label: Standard Seat (Monthly)
+    name: standard_seat_monthly
+    type: flat
+    metric: seat
+    limit: -1
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: 30.00
+    currency: USD
+    userMultiplied: true
+  elements:
+  - name: Pipeline Management
+  - name: Email Campaigns (2,000 sends/user/month)
+  - name: folkX Chrome Extension
+  - name: Email / Calendar / WhatsApp Sync
+  - name: Contact Enrichment
+  - name: AI Assistants and Magic Fields
+  - name: Zapier and Make Integrations
+- id: folk-premium
+  name: Premium
+  type: paid
+  description: >-
+    Everything in Standard plus custom objects with deal management, email
+    sequences (multi-step automated follow-ups), pipeline dashboards, REST API
+    access, advanced roles and permissions, full interaction history, and higher
+    credit limits. This is the entry tier for programmatic use of the Folk
+    External API.
+  entries:
+  - label: Premium Seat (Annual)
+    name: premium_seat_annual
+    type: flat
+    metric: seat
+    limit: -1
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: 48.00
+    currency: USD
+    userMultiplied: true
+  - label: Premium Seat (Monthly)
+    name: premium_seat_monthly
+    type: flat
+    metric: seat
+    limit: -1
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: 60.00
+    currency: USD
+    userMultiplied: true
+  elements:
+  - name: Everything in Standard
+  - name: REST API Access
+  - name: Custom Objects and Deal Management
+  - name: Email Sequences
+  - name: Pipeline Dashboards
+  - name: Advanced Roles and Permissions
+  - name: Full Interaction History
+  - name: Higher Credit Limits
+- id: folk-enterprise
+  name: Enterprise
+  type: enterprise
+  description: >-
+    Custom plan for larger teams, starting from $100/seat/month (from
+    $80/seat/month billed annually), with full API access, advanced security,
+    and negotiated terms. Contact Folk.
+  entries:
+  - label: Enterprise Seat (Annual, from)
+    name: enterprise_seat_annual
+    type: flat
+    metric: seat
+    limit: -1
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: 80.00
+    currency: USD
+    userMultiplied: true
+  - label: Enterprise Seat (Monthly, from)
+    name: enterprise_seat_monthly
+    type: flat
+    metric: seat
+    limit: -1
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: 100.00
+    currency: USD
+    userMultiplied: true
+  elements:
+  - name: Everything in Premium
+  - name: Full API Access
+  - name: Advanced Security and Controls
+  - name: Custom Terms and Support
+- id: folk-free-trial
+  name: Free Trial
+  type: trial
+  description: >-
+    Two-week free trial on your workspace, no credit card required. Used to
+    evaluate before choosing a paid per-seat plan.
+  entries:
+  - label: Trial Period
+    name: trial_period
+    type: flat
+    metric: days
+    limit: 14
+    timeFrame: day
+    geo: global
+    unit: 1
+    price: 0.00
+    currency: USD
+    userMultiplied: false
+  elements:
+  - name: Full Workspace Evaluation
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

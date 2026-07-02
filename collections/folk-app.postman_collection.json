@@ -1,0 +1,431 @@
+{
+  "info": {
+    "name": "Folk External API",
+    "description": "Folk's public REST API for managing a relationship-focused CRM workspace - people, companies, groups, deals and custom objects, notes, reminders, interactions, users, and webhooks. Base URL: https://api.folk.app (resources under /v1). Date-versioned; send a Folk-Version date such as 2025-06-09. All requests require a Bearer API key created in workspace settings; API access is a paid-plan (Premium / Enterprise) feature.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      { "key": "token", "value": "{{apiKey}}", "type": "string" }
+    ]
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "https://api.folk.app/v1", "type": "string" },
+    { "key": "apiKey", "value": "", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "People",
+      "item": [
+        {
+          "name": "List people",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/people?limit=20", "host": ["{{baseUrl}}"], "path": ["people"], "query": [{ "key": "limit", "value": "20" }, { "key": "cursor", "value": "", "disabled": true }] },
+            "description": "Lists people (contacts) in the workspace, cursor-paginated."
+          }
+        },
+        {
+          "name": "Create a person",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"firstName\": \"Jane\",\n  \"lastName\": \"Doe\",\n  \"emails\": [\"jane@example.com\"]\n}" },
+            "url": { "raw": "{{baseUrl}}/people", "host": ["{{baseUrl}}"], "path": ["people"] },
+            "description": "Creates a new person."
+          }
+        },
+        {
+          "name": "Get a person",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/people/:personId", "host": ["{{baseUrl}}"], "path": ["people", ":personId"], "variable": [{ "key": "personId", "value": "" }] },
+            "description": "Retrieves a person by ID."
+          }
+        },
+        {
+          "name": "Update a person",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{}" },
+            "url": { "raw": "{{baseUrl}}/people/:personId", "host": ["{{baseUrl}}"], "path": ["people", ":personId"], "variable": [{ "key": "personId", "value": "" }] },
+            "description": "Updates an existing person."
+          }
+        },
+        {
+          "name": "Delete a person",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/people/:personId", "host": ["{{baseUrl}}"], "path": ["people", ":personId"], "variable": [{ "key": "personId", "value": "" }] },
+            "description": "Deletes a person."
+          }
+        },
+        {
+          "name": "Search for people",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"combinator\": \"and\",\n  \"filters\": []\n}" },
+            "url": { "raw": "{{baseUrl}}/people/search", "host": ["{{baseUrl}}"], "path": ["people", "search"] },
+            "description": "Searches for people using filters."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Companies",
+      "item": [
+        {
+          "name": "List companies",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/companies?limit=20", "host": ["{{baseUrl}}"], "path": ["companies"], "query": [{ "key": "limit", "value": "20" }] },
+            "description": "Lists companies in the workspace."
+          }
+        },
+        {
+          "name": "Create a company",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Acme Inc\"\n}" },
+            "url": { "raw": "{{baseUrl}}/companies", "host": ["{{baseUrl}}"], "path": ["companies"] },
+            "description": "Creates a new company."
+          }
+        },
+        {
+          "name": "Get a company",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/companies/:companyId", "host": ["{{baseUrl}}"], "path": ["companies", ":companyId"], "variable": [{ "key": "companyId", "value": "" }] },
+            "description": "Retrieves a company by ID."
+          }
+        },
+        {
+          "name": "Update a company",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{}" },
+            "url": { "raw": "{{baseUrl}}/companies/:companyId", "host": ["{{baseUrl}}"], "path": ["companies", ":companyId"], "variable": [{ "key": "companyId", "value": "" }] },
+            "description": "Updates an existing company."
+          }
+        },
+        {
+          "name": "Delete a company",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/companies/:companyId", "host": ["{{baseUrl}}"], "path": ["companies", ":companyId"], "variable": [{ "key": "companyId", "value": "" }] },
+            "description": "Deletes a company."
+          }
+        },
+        {
+          "name": "Search for companies",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"combinator\": \"and\",\n  \"filters\": []\n}" },
+            "url": { "raw": "{{baseUrl}}/companies/search", "host": ["{{baseUrl}}"], "path": ["companies", "search"] },
+            "description": "Searches for companies using filters."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Groups",
+      "item": [
+        {
+          "name": "List groups",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/groups", "host": ["{{baseUrl}}"], "path": ["groups"] },
+            "description": "Lists the groups in the workspace."
+          }
+        },
+        {
+          "name": "List group custom fields",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/groups/:groupId/custom-fields/:entityType", "host": ["{{baseUrl}}"], "path": ["groups", ":groupId", "custom-fields", ":entityType"], "variable": [{ "key": "groupId", "value": "" }, { "key": "entityType", "value": "person" }] },
+            "description": "Lists the custom fields defined on a group for an entity type (person, company, or object)."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Deals and Custom Objects",
+      "item": [
+        {
+          "name": "List deals",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/groups/:groupId/:objectType", "host": ["{{baseUrl}}"], "path": ["groups", ":groupId", ":objectType"], "variable": [{ "key": "groupId", "value": "" }, { "key": "objectType", "value": "deals" }] },
+            "description": "Lists deals or other group-scoped objects."
+          }
+        },
+        {
+          "name": "Create a deal",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"New deal\"\n}" },
+            "url": { "raw": "{{baseUrl}}/groups/:groupId/:objectType", "host": ["{{baseUrl}}"], "path": ["groups", ":groupId", ":objectType"], "variable": [{ "key": "groupId", "value": "" }, { "key": "objectType", "value": "deals" }] },
+            "description": "Creates a deal or other group-scoped object."
+          }
+        },
+        {
+          "name": "Get a deal",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/groups/:groupId/:objectType/:objectId", "host": ["{{baseUrl}}"], "path": ["groups", ":groupId", ":objectType", ":objectId"], "variable": [{ "key": "groupId", "value": "" }, { "key": "objectType", "value": "deals" }, { "key": "objectId", "value": "" }] },
+            "description": "Retrieves a deal or object by ID."
+          }
+        },
+        {
+          "name": "Update a deal",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{}" },
+            "url": { "raw": "{{baseUrl}}/groups/:groupId/:objectType/:objectId", "host": ["{{baseUrl}}"], "path": ["groups", ":groupId", ":objectType", ":objectId"], "variable": [{ "key": "groupId", "value": "" }, { "key": "objectType", "value": "deals" }, { "key": "objectId", "value": "" }] },
+            "description": "Updates a deal or object."
+          }
+        },
+        {
+          "name": "Delete a deal",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/groups/:groupId/:objectType/:objectId", "host": ["{{baseUrl}}"], "path": ["groups", ":groupId", ":objectType", ":objectId"], "variable": [{ "key": "groupId", "value": "" }, { "key": "objectType", "value": "deals" }, { "key": "objectId", "value": "" }] },
+            "description": "Deletes a deal or object."
+          }
+        },
+        {
+          "name": "Search deals",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"combinator\": \"and\",\n  \"filters\": []\n}" },
+            "url": { "raw": "{{baseUrl}}/groups/:groupId/:objectType/search", "host": ["{{baseUrl}}"], "path": ["groups", ":groupId", ":objectType", "search"], "variable": [{ "key": "groupId", "value": "" }, { "key": "objectType", "value": "deals" }] },
+            "description": "Searches deals or other group-scoped objects."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Notes",
+      "item": [
+        {
+          "name": "List notes",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/notes?limit=20", "host": ["{{baseUrl}}"], "path": ["notes"], "query": [{ "key": "limit", "value": "20" }] },
+            "description": "Lists notes."
+          }
+        },
+        {
+          "name": "Create a note",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"content\": \"Followed up over email\",\n  \"entityType\": \"person\",\n  \"entityId\": \"\"\n}" },
+            "url": { "raw": "{{baseUrl}}/notes", "host": ["{{baseUrl}}"], "path": ["notes"] },
+            "description": "Creates a note."
+          }
+        },
+        {
+          "name": "Get a note",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/notes/:noteId", "host": ["{{baseUrl}}"], "path": ["notes", ":noteId"], "variable": [{ "key": "noteId", "value": "" }] },
+            "description": "Retrieves a note by ID."
+          }
+        },
+        {
+          "name": "Update a note",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{}" },
+            "url": { "raw": "{{baseUrl}}/notes/:noteId", "host": ["{{baseUrl}}"], "path": ["notes", ":noteId"], "variable": [{ "key": "noteId", "value": "" }] },
+            "description": "Updates a note."
+          }
+        },
+        {
+          "name": "Delete a note",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/notes/:noteId", "host": ["{{baseUrl}}"], "path": ["notes", ":noteId"], "variable": [{ "key": "noteId", "value": "" }] },
+            "description": "Deletes a note."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reminders",
+      "item": [
+        {
+          "name": "List reminders",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/reminders?limit=20", "host": ["{{baseUrl}}"], "path": ["reminders"], "query": [{ "key": "limit", "value": "20" }] },
+            "description": "Lists reminders."
+          }
+        },
+        {
+          "name": "Create a reminder",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"title\": \"Check in with Jane\",\n  \"dueAt\": \"2026-08-01T09:00:00Z\",\n  \"entityType\": \"person\",\n  \"entityId\": \"\"\n}" },
+            "url": { "raw": "{{baseUrl}}/reminders", "host": ["{{baseUrl}}"], "path": ["reminders"] },
+            "description": "Creates a reminder."
+          }
+        },
+        {
+          "name": "Get a reminder",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/reminders/:reminderId", "host": ["{{baseUrl}}"], "path": ["reminders", ":reminderId"], "variable": [{ "key": "reminderId", "value": "" }] },
+            "description": "Retrieves a reminder by ID."
+          }
+        },
+        {
+          "name": "Update a reminder",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{}" },
+            "url": { "raw": "{{baseUrl}}/reminders/:reminderId", "host": ["{{baseUrl}}"], "path": ["reminders", ":reminderId"], "variable": [{ "key": "reminderId", "value": "" }] },
+            "description": "Updates a reminder."
+          }
+        },
+        {
+          "name": "Delete a reminder",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/reminders/:reminderId", "host": ["{{baseUrl}}"], "path": ["reminders", ":reminderId"], "variable": [{ "key": "reminderId", "value": "" }] },
+            "description": "Deletes a reminder."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Interactions",
+      "item": [
+        {
+          "name": "Create an interaction",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"type\": \"email\",\n  \"entityType\": \"person\",\n  \"entityId\": \"\",\n  \"occurredAt\": \"2026-07-02T12:00:00Z\"\n}" },
+            "url": { "raw": "{{baseUrl}}/interactions", "host": ["{{baseUrl}}"], "path": ["interactions"] },
+            "description": "Records an interaction against a contact."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "List users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/users", "host": ["{{baseUrl}}"], "path": ["users"] },
+            "description": "Lists the users (members) in the workspace."
+          }
+        },
+        {
+          "name": "Get the current user",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/users/me", "host": ["{{baseUrl}}"], "path": ["users", "me"] },
+            "description": "Gets the current authenticated user behind the API key."
+          }
+        },
+        {
+          "name": "Get a user",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/users/:userId", "host": ["{{baseUrl}}"], "path": ["users", ":userId"], "variable": [{ "key": "userId", "value": "" }] },
+            "description": "Retrieves a user by ID."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Webhooks",
+      "item": [
+        {
+          "name": "List webhooks",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/webhooks", "host": ["{{baseUrl}}"], "path": ["webhooks"] },
+            "description": "Lists webhooks."
+          }
+        },
+        {
+          "name": "Create a webhook",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"My app integration\",\n  \"targetUrl\": \"https://my-app.com/webhook\",\n  \"subscribedEvents\": [{ \"eventType\": \"person.created\" }]\n}" },
+            "url": { "raw": "{{baseUrl}}/webhooks", "host": ["{{baseUrl}}"], "path": ["webhooks"] },
+            "description": "Creates a webhook and returns its signing secret."
+          }
+        },
+        {
+          "name": "Get a webhook",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/webhooks/:webhookId", "host": ["{{baseUrl}}"], "path": ["webhooks", ":webhookId"], "variable": [{ "key": "webhookId", "value": "" }] },
+            "description": "Retrieves a webhook by ID."
+          }
+        },
+        {
+          "name": "Update a webhook",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{}" },
+            "url": { "raw": "{{baseUrl}}/webhooks/:webhookId", "host": ["{{baseUrl}}"], "path": ["webhooks", ":webhookId"], "variable": [{ "key": "webhookId", "value": "" }] },
+            "description": "Updates a webhook."
+          }
+        },
+        {
+          "name": "Delete a webhook",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/webhooks/:webhookId", "host": ["{{baseUrl}}"], "path": ["webhooks", ":webhookId"], "variable": [{ "key": "webhookId", "value": "" }] },
+            "description": "Deletes a webhook."
+          }
+        }
+      ]
+    }
+  ]
+}

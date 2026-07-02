@@ -1,0 +1,110 @@
+specification: FinOps Framework
+specificationVersion: '1.0'
+schema: https://www.finops.org/framework/
+provider: Folk
+providerId: folk-app
+created: '2026-07-02'
+modified: '2026-07-02'
+reconciled: false
+tags:
+- CRM
+- Relationships
+- Contacts
+- FinOps
+- Cost Management
+- FOCUS
+description: >-
+  FinOps view of Folk spend. Folk is a seat-based SaaS CRM: cost is driven almost
+  entirely by the number of paid seats and the tier of each seat (Standard,
+  Premium, or Enterprise), billed monthly or annually per user. There is no
+  usage meter on the API itself - the Folk External API carries no separate
+  per-call charge - but API access is gated to the Premium and Enterprise tiers,
+  so the relevant cost lever for an integration is how many Premium/Enterprise
+  seats the workspace carries. Secondary cost drivers are plan-bound credit
+  limits (enrichment, AI/Magic Fields) and email-campaign send allowances.
+notes: >-
+  API access is a paid-tier feature (Premium and up); model the cost of a Folk
+  integration as the incremental Premium/Enterprise seats required rather than as
+  metered API usage. Verify per-seat rates and credit allowances on the Folk
+  pricing page during reconciliation.
+sources:
+- https://www.folk.app/pricing
+- https://help.folk.app/en/articles/6600210-pricing-plans
+- https://developer.folk.app/api-reference/authentication
+- https://focus.finops.org/focus-specification/v1-3/
+alignedWith:
+  framework: FinOps Foundation Framework
+  frameworkUrl: https://www.finops.org/framework/
+  dataSpec: FOCUS
+  dataSpecVersion: '1.3'
+  dataSpecUrl: https://focus.finops.org/focus-specification/v1-3/
+publisherName: Folk
+serviceCategory: CRM and Relationship Management
+billingModel:
+  pricingCategory: Subscription-Based
+  billingFrequency: Monthly or Annual
+  billingCurrency: USD
+  chargeCategories:
+  - Purchase
+  - Usage
+  - Adjustment
+focusColumns:
+  ServiceName: Folk
+  ServiceCategory: CRM and Relationship Management
+  ProviderName: Folk
+  PublisherName: Folk
+  InvoiceIssuerName: Folk
+  BillingCurrency: USD
+  ChargeCategory: Purchase
+  PricingCategory: Subscription-Based
+meters:
+- name: seats
+  description: >-
+    Paid user seats, the primary cost driver. Billed per seat per month (or
+    annually) at the tier's rate; API access requires Premium or Enterprise
+    seats.
+  unit: seats
+  aggregation: sum
+  dimensions:
+  - workspace
+  - plan
+- name: email_campaign_sends
+  description: >-
+    Email campaign sends, allowanced per seat per month (e.g. 2,000 on
+    Standard); overage/higher allowances vary by tier.
+  unit: emails
+  aggregation: sum
+  dimensions:
+  - workspace
+  - user
+- name: enrichment_credits
+  description: >-
+    Contact enrichment / AI (Magic Fields) credits, bounded by plan-level credit
+    limits that increase with tier.
+  unit: credits
+  aggregation: sum
+  dimensions:
+  - workspace
+  - plan
+principles:
+- name: Visibility
+  description: >-
+    Track paid seats by tier and identify which seats exist solely to unlock API
+    access; monitor email-send and enrichment credit consumption against plan
+    allowances.
+- name: Allocation
+  description: >-
+    Map seats and workspaces to teams so CRM cost is attributed to the
+    revenue/relationship function that owns them.
+- name: Optimization
+  description: >-
+    Right-size the tier per user - keep users who only need contact management on
+    Standard and reserve Premium/Enterprise for those who need API access, custom
+    objects, or sequences; prefer annual billing (~20% saving) for stable teams.
+- name: Accountability
+  description: >-
+    Assign a workspace owner to review seat count and tier mix each billing
+    cycle and reconcile against actual API-integration and campaign needs.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

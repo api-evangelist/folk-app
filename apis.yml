@@ -1,0 +1,226 @@
+aid: folk-app
+url: https://raw.githubusercontent.com/api-evangelist/folk-app/refs/heads/main/apis.yml
+name: Folk
+kind: company
+description: Folk is a lightweight, relationship-focused CRM for people who build
+  their business on relationships. Folk's public REST API (versioned by date, base
+  https://api.folk.app/v1, Bearer API key auth) lets you programmatically manage
+  people, companies, groups, deals and other custom objects, notes, reminders, and
+  interactions, and subscribe to real-time changes through webhooks. API access is
+  a paid-plan feature.
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+tags:
+- CRM
+- Relationships
+- Contacts
+- Sales
+- Pipeline
+- Webhooks
+created: '2026-07-02'
+modified: '2026-07-02'
+specificationVersion: '0.19'
+apis:
+- aid: folk-app:folk-app-people-api
+  name: Folk People API
+  tags:
+  - People
+  - Contacts
+  - CRM
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://developer.folk.app/api-reference/people
+  baseURL: https://api.folk.app/v1
+  properties:
+  - url: https://developer.folk.app/api-reference/introduction
+    type: Documentation
+  - url: https://developer.folk.app/api-reference/people
+    type: APIReference
+  - url: openapi/folk-app-openapi.yml
+    type: OpenAPI
+  - url: collections/folk-app.postman_collection.json
+    type: PostmanCollection
+  - url: collections/folk-app.opencollection.json
+    type: OpenCollection
+  description: Create, retrieve, list, update, delete, and search people (contacts) -
+    the core relationship records in Folk - including emails, phones, URLs, group
+    membership, and custom field values.
+- aid: folk-app:folk-app-companies-api
+  name: Folk Companies API
+  tags:
+  - Companies
+  - Organizations
+  - CRM
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://developer.folk.app/api-reference/companies
+  baseURL: https://api.folk.app/v1
+  properties:
+  - url: https://developer.folk.app/api-reference/companies
+    type: APIReference
+  - url: openapi/folk-app-openapi.yml
+    type: OpenAPI
+  - url: collections/folk-app.postman_collection.json
+    type: PostmanCollection
+  - url: collections/folk-app.opencollection.json
+    type: OpenCollection
+  description: Create, retrieve, list, update, delete, and search companies -
+    organization records that people can be associated with, with their own
+    custom fields and group membership.
+- aid: folk-app:folk-app-deals-objects-api
+  name: Folk Deals and Custom Objects API
+  tags:
+  - Deals
+  - Custom Objects
+  - Pipeline
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://developer.folk.app/api-reference/deals
+  baseURL: https://api.folk.app/v1
+  properties:
+  - url: https://developer.folk.app/api-reference/deals
+    type: APIReference
+  - url: openapi/folk-app-openapi.yml
+    type: OpenAPI
+  - url: collections/folk-app.postman_collection.json
+    type: PostmanCollection
+  - url: collections/folk-app.opencollection.json
+    type: OpenCollection
+  description: Create, retrieve, list, update, delete, and search deals and other
+    group-scoped custom objects, addressed as /v1/groups/{groupId}/{objectType}.
+    Deals are the built-in pipeline object; custom objects are a Premium feature.
+- aid: folk-app:folk-app-groups-api
+  name: Folk Groups API
+  tags:
+  - Groups
+  - Custom Fields
+  - Segments
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://developer.folk.app/api-reference/groups
+  baseURL: https://api.folk.app/v1
+  properties:
+  - url: https://developer.folk.app/api-reference/groups
+    type: APIReference
+  - url: openapi/folk-app-openapi.yml
+    type: OpenAPI
+  - url: collections/folk-app.postman_collection.json
+    type: PostmanCollection
+  - url: collections/folk-app.opencollection.json
+    type: OpenCollection
+  description: List the groups in a workspace and list the custom fields defined on a
+    group for a given entity type (person, company, or object), so integrations can
+    map values to the right group schema.
+- aid: folk-app:folk-app-notes-api
+  name: Folk Notes API
+  tags:
+  - Notes
+  - Activity
+  - CRM
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://developer.folk.app/api-reference/notes
+  baseURL: https://api.folk.app/v1
+  properties:
+  - url: https://developer.folk.app/api-reference/notes
+    type: APIReference
+  - url: openapi/folk-app-openapi.yml
+    type: OpenAPI
+  - url: collections/folk-app.postman_collection.json
+    type: PostmanCollection
+  - url: collections/folk-app.opencollection.json
+    type: OpenCollection
+  description: Create, retrieve, list, update, and delete notes attached to people,
+    companies, or objects to capture free-form context on a relationship.
+- aid: folk-app:folk-app-reminders-api
+  name: Folk Reminders API
+  tags:
+  - Reminders
+  - Tasks
+  - Follow-Up
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://developer.folk.app/api-reference/reminders
+  baseURL: https://api.folk.app/v1
+  properties:
+  - url: https://developer.folk.app/api-reference/reminders
+    type: APIReference
+  - url: openapi/folk-app-openapi.yml
+    type: OpenAPI
+  - url: collections/folk-app.postman_collection.json
+    type: PostmanCollection
+  - url: collections/folk-app.opencollection.json
+    type: OpenCollection
+  description: Create, retrieve, list, update, and delete reminders - dated follow-up
+    tasks tied to contacts - so you never lose track of the next touchpoint.
+- aid: folk-app:folk-app-interactions-api
+  name: Folk Interactions API
+  tags:
+  - Interactions
+  - Activity
+  - Timeline
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://developer.folk.app/api-reference/interactions
+  baseURL: https://api.folk.app/v1
+  properties:
+  - url: https://developer.folk.app/api-reference/interactions
+    type: APIReference
+  - url: openapi/folk-app-openapi.yml
+    type: OpenAPI
+  - url: collections/folk-app.postman_collection.json
+    type: PostmanCollection
+  - url: collections/folk-app.opencollection.json
+    type: OpenCollection
+  description: Record an interaction (such as an email, call, or meeting) against a
+    contact to build up the relationship timeline programmatically.
+- aid: folk-app:folk-app-users-api
+  name: Folk Users API
+  tags:
+  - Users
+  - Members
+  - Workspace
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://developer.folk.app/api-reference/users
+  baseURL: https://api.folk.app/v1
+  properties:
+  - url: https://developer.folk.app/api-reference/users
+    type: APIReference
+  - url: openapi/folk-app-openapi.yml
+    type: OpenAPI
+  - url: collections/folk-app.postman_collection.json
+    type: PostmanCollection
+  - url: collections/folk-app.opencollection.json
+    type: OpenCollection
+  description: List the users (members) in a workspace, retrieve a user by ID, and get
+    the current authenticated user (/v1/users/me) behind the API key.
+- aid: folk-app:folk-app-webhooks-api
+  name: Folk Webhooks API
+  tags:
+  - Webhooks
+  - Events
+  - Real-Time
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://developer.folk.app/api-reference/webhooks
+  baseURL: https://api.folk.app/v1
+  properties:
+  - url: https://developer.folk.app/api-reference/webhooks
+    type: APIReference
+  - url: openapi/folk-app-openapi.yml
+    type: OpenAPI
+  - url: collections/folk-app.postman_collection.json
+    type: PostmanCollection
+  - url: collections/folk-app.opencollection.json
+    type: OpenCollection
+  description: Create, retrieve, list, update, and delete webhooks that subscribe to
+    real-time change events (person, company, object, note, and reminder created /
+    updated / deleted, plus reminder.triggered), with a signing secret for
+    verification. This is Folk's real-time mechanism - there is no WebSocket API.
+common:
+- type: LinkedIn
+  url: https://www.linkedin.com/company/folk-app
+- type: Website
+  url: https://www.folk.app
+- type: Documentation
+  url: https://developer.folk.app
+- type: Plans
+  url: plans/folk-app-plans-pricing.yml
+- type: RateLimits
+  url: rate-limits/folk-app-rate-limits.yml
+- type: FinOps
+  url: finops/folk-app-finops.yml
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

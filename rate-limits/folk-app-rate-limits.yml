@@ -1,0 +1,74 @@
+specification: API Commons Rate Limits
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/RateLimits
+provider: Folk
+providerId: folk-app
+created: '2026-07-02'
+modified: '2026-07-02'
+reconciled: false
+tags:
+- CRM
+- Relationships
+- Contacts
+- Rate Limiting
+- Quotas
+description: >-
+  The Folk External API applies rate limiting per API key. Every response
+  carries the standard rate-limit headers X-RateLimit-Limit,
+  X-RateLimit-Remaining, and X-RateLimit-Reset (UTC epoch seconds), and a 429
+  Too Many Requests response includes a Retry-After header telling the client how
+  many seconds to wait. Folk's published schema illustrates the window with an
+  example limit of 1000 requests, but it does not commit to a fixed numeric
+  ceiling in the reference, so clients should read the headers at runtime rather
+  than hard-coding a value. List endpoints are cursor-paginated (limit + cursor)
+  to keep result sets bounded.
+notes: >-
+  A precise, contractual per-minute request cap is not published as of the
+  review date; the 1000 value is an example in the OpenAPI schema, not a
+  guaranteed limit. Always honor the X-RateLimit-* and Retry-After response
+  headers. Verify any documented ceilings in Folk's API reference during
+  reconciliation.
+sources:
+- https://developer.folk.app/api-reference/introduction
+- https://developer.folk.app/api-reference/authentication
+- https://developer.folk.app/schemas/2025-06-09.json
+responseCodes:
+  throttled: 429
+limits:
+- name: Requests Per API Key
+  scope: apiKey
+  metric: requests
+  limit: header-advertised (example 1000 per window)
+  notes: >-
+    Actual ceiling is advertised at runtime via X-RateLimit-Limit; the 1000
+    figure is an illustrative example in the published schema.
+- name: List Page Size
+  scope: request
+  metric: items
+  limit: 100 max (default 20)
+  notes: Controlled by the limit query parameter on list endpoints.
+headers:
+- name: X-RateLimit-Limit
+  description: Maximum number of requests allowed in the current rate limit window.
+- name: X-RateLimit-Remaining
+  description: Number of requests remaining in the current window.
+- name: X-RateLimit-Reset
+  description: Time the current window resets, in UTC epoch seconds.
+- name: Retry-After
+  description: Seconds to wait before retrying, returned on 429 responses.
+policies:
+- name: Cursor Pagination
+  description: >-
+    List endpoints return a nextCursor and accept limit + cursor parameters to
+    bound response size and paginate large collections.
+- name: Backoff Strategy
+  description: >-
+    On a 429 response, honor the Retry-After header and apply exponential
+    backoff with jitter before retrying.
+- name: Header-Driven Throttling
+  description: >-
+    Clients should read X-RateLimit-Remaining / X-RateLimit-Reset on every
+    response and self-throttle rather than assume a fixed limit.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

@@ -1,0 +1,148 @@
+aid: folk-app
+name: Folk
+review:
+  question: Does Folk expose a documented public WebSocket API?
+  answer: false
+  date: '2026-07-02'
+  reviewer: API Evangelist
+  asyncapiSpecCreated: false
+  asyncapiScopeNote: |
+    No AsyncAPI document was authored. Folk's public real-time surface is
+    outbound webhooks (HTTP POST from Folk to a subscriber-provided targetUrl),
+    not a server-push transport that Folk hosts. There is no WebSocket or SSE
+    endpoint on Folk's own API to model. The webhook event catalog is captured
+    in the OpenAPI document (the /v1/webhooks operations and the
+    subscribedEvents enum), which is the appropriate place for a
+    subscriber-registers-a-URL webhook model; an AsyncAPI document describing a
+    Folk-hosted channel would misrepresent the transport.
+findings:
+  summary: |
+    Folk does not publish a documented public WebSocket API. Folk is a
+    lightweight, relationship-focused CRM. Its public "Folk External API" is a
+    date-versioned REST API (base https://api.folk.app, resources under /v1),
+    authenticated with a Bearer API key created in workspace settings; API
+    access is a paid-plan (Premium / Enterprise) feature. The API is pure
+    request/response REST over HTTPS covering people, companies, groups, deals
+    and other group-scoped custom objects, notes, reminders, interactions,
+    users, and webhooks. Folk's real-time mechanism is outbound webhooks: a
+    client registers a publicly reachable targetUrl and subscribes to change
+    events (person / company / object / note / reminder created, updated,
+    deleted, plus reminder.triggered and person/company groups_updated), and
+    Folk POSTs signed event payloads to that URL. No realtime, bidirectional, or
+    streaming WebSocket (ws:// or wss://) endpoint is documented anywhere in
+    Folk's developer documentation or its published OpenAPI schema.
+  publicApi: |
+    Yes - a real, documented public REST API exists. Folk publishes an OpenAPI
+    3.1 schema at https://developer.folk.app/schemas/2025-06-09.json (the
+    version is a date, 2025-06-09) and a hosted reference at
+    https://developer.folk.app. The surface is small but genuine: 39 documented
+    operations across 9 resource areas. API access requires a paid Folk plan
+    (Premium or Enterprise); the api.folk.app host returns 401 without a Bearer
+    key.
+  transports:
+    - protocol: REST
+      scheme: https
+      baseURL: https://api.folk.app/v1
+      documented: true
+      note: Date-versioned request/response REST. Bearer API key auth. Cursor pagination with X-RateLimit-* headers.
+    - protocol: Webhook
+      scheme: https
+      documented: true
+      note: >-
+        Outbound HTTP POST from Folk to a subscriber-registered targetUrl, with a
+        signing secret for verification. Server-to-endpoint HTTP, not WebSocket.
+    - protocol: WebSocket
+      scheme: wss
+      documented: false
+      note: No WebSocket endpoint is documented anywhere in Folk's API reference or OpenAPI schema as of the review date.
+  endpointsConfirmedRest:
+    - GET    https://api.folk.app/v1/people
+    - POST   https://api.folk.app/v1/people
+    - GET    https://api.folk.app/v1/people/{personId}
+    - PATCH  https://api.folk.app/v1/people/{personId}
+    - DELETE https://api.folk.app/v1/people/{personId}
+    - POST   https://api.folk.app/v1/people/search
+    - GET    https://api.folk.app/v1/companies
+    - POST   https://api.folk.app/v1/companies
+    - GET    https://api.folk.app/v1/companies/{companyId}
+    - PATCH  https://api.folk.app/v1/companies/{companyId}
+    - DELETE https://api.folk.app/v1/companies/{companyId}
+    - POST   https://api.folk.app/v1/companies/search
+    - GET    https://api.folk.app/v1/groups
+    - GET    https://api.folk.app/v1/groups/{groupId}/custom-fields/{entityType}
+    - GET    https://api.folk.app/v1/groups/{groupId}/{objectType}
+    - POST   https://api.folk.app/v1/groups/{groupId}/{objectType}
+    - GET    https://api.folk.app/v1/groups/{groupId}/{objectType}/{objectId}
+    - PATCH  https://api.folk.app/v1/groups/{groupId}/{objectType}/{objectId}
+    - DELETE https://api.folk.app/v1/groups/{groupId}/{objectType}/{objectId}
+    - POST   https://api.folk.app/v1/groups/{groupId}/{objectType}/search
+    - GET    https://api.folk.app/v1/notes
+    - POST   https://api.folk.app/v1/notes
+    - GET    https://api.folk.app/v1/notes/{noteId}
+    - PATCH  https://api.folk.app/v1/notes/{noteId}
+    - DELETE https://api.folk.app/v1/notes/{noteId}
+    - GET    https://api.folk.app/v1/reminders
+    - POST   https://api.folk.app/v1/reminders
+    - GET    https://api.folk.app/v1/reminders/{reminderId}
+    - PATCH  https://api.folk.app/v1/reminders/{reminderId}
+    - DELETE https://api.folk.app/v1/reminders/{reminderId}
+    - POST   https://api.folk.app/v1/interactions
+    - GET    https://api.folk.app/v1/users
+    - GET    https://api.folk.app/v1/users/me
+    - GET    https://api.folk.app/v1/users/{userId}
+    - GET    https://api.folk.app/v1/webhooks
+    - POST   https://api.folk.app/v1/webhooks
+    - GET    https://api.folk.app/v1/webhooks/{webhookId}
+    - PATCH  https://api.folk.app/v1/webhooks/{webhookId}
+    - DELETE https://api.folk.app/v1/webhooks/{webhookId}
+  endpointsConfirmed: 39
+  endpointsModeled: 39
+  webhookEvents:
+    - person.created
+    - person.updated
+    - person.deleted
+    - person.groups_updated
+    - person.workspace_interaction_metadata_updated
+    - company.created
+    - company.updated
+    - company.deleted
+    - company.groups_updated
+    - object.created
+    - object.updated
+    - object.deleted
+    - note.created
+    - note.updated
+    - note.deleted
+    - reminder.created
+    - reminder.updated
+    - reminder.deleted
+    - reminder.triggered
+sources:
+  - url: https://developer.folk.app
+    type: Documentation
+    note: Developer home - Quickstart, Core Concepts, API Reference, Changelog. No WebSocket mentioned.
+  - url: https://developer.folk.app/llms.txt
+    type: Documentation
+    note: Machine-readable documentation index listing all reference sections.
+  - url: https://developer.folk.app/schemas/2025-06-09.json
+    type: OpenAPI
+    note: Published OpenAPI 3.1 schema (Folk External API, version 2025-06-09). Server https://api.folk.app; Bearer auth; all operations REST.
+  - url: https://developer.folk.app/api-reference/authentication
+    type: Documentation
+    note: 'Bearer API key auth (Authorization: Bearer <api_key>); keys created in workspace settings; 401 without auth.'
+  - url: https://developer.folk.app/api-reference/webhooks
+    type: APIReference
+    note: Webhook CRUD plus subscribedEvents enum and signing secret. Outbound HTTP POST, not WebSocket.
+  - url: https://www.folk.app/pricing
+    type: Documentation
+    note: Per-seat Standard / Premium / Enterprise tiers; REST API access requires Premium or Enterprise.
+actions:
+  asyncapiPath: null
+  apisYmlUpdated: true
+  reason: |
+    No WebSocket protocol surface exists. Folk's own public API is
+    request/response REST plus an outbound webhook mechanism (subscriber
+    registers a targetUrl; Folk POSTs signed events). No AsyncAPI document was
+    created because there is no Folk-hosted server-push channel (WebSocket or
+    SSE) to model; the webhook subscription surface is captured in the OpenAPI
+    document instead.
