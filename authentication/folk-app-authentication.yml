@@ -1,0 +1,14 @@
+generated: '2026-07-11'
+method: derived
+source: openapi/folk-app-openapi.yml
+summary:
+  types:
+  - http
+schemes:
+- name: bearerApiKeyAuth
+  type: http
+  scheme: bearer
+  description: 'API key for authentication, sent as `Authorization: Bearer <api_key>`. Keys
+    are created in workspace settings under "API". API access requires a paid Folk plan.'
+  sources:
+  - openapi/folk-app-openapi.yml

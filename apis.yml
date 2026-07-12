@@ -209,6 +209,10 @@ apis:
     updated / deleted, plus reminder.triggered), with a signing secret for
     verification. This is Folk's real-time mechanism - there is no WebSocket API.
 common:
+- type: DomainSecurity
+  url: security/folk-app-domain-security.yml
+- type: Authentication
+  url: authentication/folk-app-authentication.yml
 - type: LinkedIn
   url: https://www.linkedin.com/company/folk-app
 - type: Website
@@ -221,6 +225,8 @@ common:
   url: rate-limits/folk-app-rate-limits.yml
 - type: FinOps
   url: finops/folk-app-finops.yml
+- url: https://www.folk.app/blog
+  type: Blog
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
