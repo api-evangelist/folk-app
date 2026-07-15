@@ -209,6 +209,8 @@ apis:
     updated / deleted, plus reminder.triggered), with a signing secret for
     verification. This is Folk's real-time mechanism - there is no WebSocket API.
 common:
+- type: AgenticAccess
+  url: agentic-access/folk-app-agentic-access.yml
 - type: DomainSecurity
   url: security/folk-app-domain-security.yml
 - type: Authentication
