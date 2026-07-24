@@ -1,0 +1,247 @@
+openapi: 3.0.3
+info:
+  title: Folk External Companies Deals API
+  description: Folk's public REST API lets you manage the relationship data in a Folk workspace - people, companies, groups, deals and other custom objects, notes, reminders, and interactions - and subscribe to real-time changes via webhooks. The API is versioned by date (send an `Folk-Version` date such as 2025-06-09); the production base URL is https://api.folk.app and all documented resources live under the `/v1` path. Every request is authenticated with a Bearer API key created in workspace settings under "API". API access is a paid-plan (Premium / Enterprise) feature. This document is modeled by API Evangelist from Folk's published OpenAPI schema (https://developer.folk.app/schemas/2025-06-09.json) and reference docs.
+  version: '2025-06-09'
+  contact:
+    name: Folk
+    url: https://www.folk.app
+  termsOfService: https://www.folk.app/legal/terms-and-conditions
+servers:
+- url: https://api.folk.app
+  description: Folk's public API production base URL.
+security:
+- bearerApiKeyAuth: []
+tags:
+- name: Deals
+  description: Deals and other group-scoped custom objects.
+paths:
+  /v1/groups/{groupId}/{objectType}:
+    parameters:
+    - $ref: '#/components/parameters/GroupId'
+    - $ref: '#/components/parameters/ObjectType'
+    get:
+      operationId: listDeals
+      tags:
+      - Deals
+      summary: List deals
+      parameters:
+      - $ref: '#/components/parameters/Limit'
+      - $ref: '#/components/parameters/Cursor'
+      responses:
+        '200':
+          $ref: '#/components/responses/ObjectList'
+    post:
+      operationId: createDeal
+      tags:
+      - Deals
+      summary: Create a deal
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ObjectInput'
+      responses:
+        '201':
+          $ref: '#/components/responses/ObjectSingle'
+  /v1/groups/{groupId}/{objectType}/{objectId}:
+    parameters:
+    - $ref: '#/components/parameters/GroupId'
+    - $ref: '#/components/parameters/ObjectType'
+    - name: objectId
+      in: path
+      required: true
+      description: The unique identifier of the object.
+      schema:
+        type: string
+    get:
+      operationId: getDeal
+      tags:
+      - Deals
+      summary: Get a deal
+      responses:
+        '200':
+          $ref: '#/components/responses/ObjectSingle'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    patch:
+      operationId: updateDeal
+      tags:
+      - Deals
+      summary: Update a deal
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ObjectInput'
+      responses:
+        '200':
+          $ref: '#/components/responses/ObjectSingle'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      operationId: deleteDeal
+      tags:
+      - Deals
+      summary: Delete a deal
+      responses:
+        '204':
+          description: The object was deleted.
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /v1/groups/{groupId}/{objectType}/search:
+    parameters:
+    - $ref: '#/components/parameters/GroupId'
+    - $ref: '#/components/parameters/ObjectType'
+    post:
+      operationId: searchDeals
+      tags:
+      - Deals
+      summary: Search deals
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SearchInput'
+      responses:
+        '200':
+          $ref: '#/components/responses/ObjectList'
+components:
+  schemas:
+    SearchInput:
+      type: object
+      description: Filter payload for a search request.
+      properties:
+        combinator:
+          type: string
+          enum:
+          - and
+          - or
+        filters:
+          type: array
+          items:
+            type: object
+            properties:
+              attribute:
+                type: string
+              operator:
+                type: string
+              value: {}
+        limit:
+          type: integer
+        cursor:
+          type: string
+    CustomObject:
+      type: object
+      description: A group-scoped object such as a deal or a custom object type, whose fields are defined by the group's custom field schema.
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        groupId:
+          type: string
+        customFieldValues:
+          type: object
+          additionalProperties: true
+        createdAt:
+          type: string
+          format: date-time
+    Pagination:
+      type: object
+      description: Cursor-based pagination metadata.
+      properties:
+        nextCursor:
+          type: string
+          nullable: true
+          description: Cursor to pass to retrieve the next page, or null if none.
+    ObjectInput:
+      type: object
+      properties:
+        name:
+          type: string
+        customFieldValues:
+          type: object
+          additionalProperties: true
+    Error:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              example: NOT_FOUND
+            message:
+              type: string
+            documentationUrl:
+              type: string
+  parameters:
+    ObjectType:
+      name: objectType
+      in: path
+      required: true
+      description: The type of group-scoped object, e.g. "deals" for the built-in deal object or a custom object type defined on the group.
+      schema:
+        type: string
+    Cursor:
+      name: cursor
+      in: query
+      required: false
+      description: A cursor for pagination across multiple pages of results. Don't include this parameter on the first request; use the `nextCursor` from the previous response.
+      schema:
+        type: string
+    Limit:
+      name: limit
+      in: query
+      required: false
+      description: The number of items to return.
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+    GroupId:
+      name: groupId
+      in: path
+      required: true
+      description: The unique identifier of the group.
+      schema:
+        type: string
+  responses:
+    ObjectList:
+      description: A paginated list of group-scoped objects.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CustomObject'
+              pagination:
+                $ref: '#/components/schemas/Pagination'
+    NotFound:
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ObjectSingle:
+      description: A single group-scoped object (deal or custom object).
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '#/components/schemas/CustomObject'
+  securitySchemes:
+    bearerApiKeyAuth:
+      type: http
+      scheme: bearer
+      description: 'API key for authentication, sent as `Authorization: Bearer <api_key>`. Keys are created in workspace settings under "API". API access requires a paid Folk plan.'

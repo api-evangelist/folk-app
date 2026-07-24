@@ -1,0 +1,87 @@
+openapi: 3.0.3
+info:
+  title: Folk External Companies Interactions API
+  description: Folk's public REST API lets you manage the relationship data in a Folk workspace - people, companies, groups, deals and other custom objects, notes, reminders, and interactions - and subscribe to real-time changes via webhooks. The API is versioned by date (send an `Folk-Version` date such as 2025-06-09); the production base URL is https://api.folk.app and all documented resources live under the `/v1` path. Every request is authenticated with a Bearer API key created in workspace settings under "API". API access is a paid-plan (Premium / Enterprise) feature. This document is modeled by API Evangelist from Folk's published OpenAPI schema (https://developer.folk.app/schemas/2025-06-09.json) and reference docs.
+  version: '2025-06-09'
+  contact:
+    name: Folk
+    url: https://www.folk.app
+  termsOfService: https://www.folk.app/legal/terms-and-conditions
+servers:
+- url: https://api.folk.app
+  description: Folk's public API production base URL.
+security:
+- bearerApiKeyAuth: []
+tags:
+- name: Interactions
+  description: Recorded interactions on the relationship timeline.
+paths:
+  /v1/interactions:
+    post:
+      operationId: createInteraction
+      tags:
+      - Interactions
+      summary: Create an interaction
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InteractionInput'
+      responses:
+        '201':
+          description: The interaction was recorded.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Interaction'
+components:
+  schemas:
+    Interaction:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          description: The kind of interaction, e.g. email, call, or meeting.
+        entityType:
+          type: string
+          enum:
+          - person
+          - company
+          - object
+        entityId:
+          type: string
+        occurredAt:
+          type: string
+          format: date-time
+    InteractionInput:
+      type: object
+      required:
+      - type
+      - entityId
+      properties:
+        type:
+          type: string
+        entityType:
+          type: string
+          enum:
+          - person
+          - company
+          - object
+        entityId:
+          type: string
+        occurredAt:
+          type: string
+          format: date-time
+        note:
+          type: string
+  securitySchemes:
+    bearerApiKeyAuth:
+      type: http
+      scheme: bearer
+      description: 'API key for authentication, sent as `Authorization: Bearer <api_key>`. Keys are created in workspace settings under "API". API access requires a paid Folk plan.'

@@ -1,0 +1,128 @@
+openapi: 3.0.3
+info:
+  title: Folk External Companies Groups API
+  description: Folk's public REST API lets you manage the relationship data in a Folk workspace - people, companies, groups, deals and other custom objects, notes, reminders, and interactions - and subscribe to real-time changes via webhooks. The API is versioned by date (send an `Folk-Version` date such as 2025-06-09); the production base URL is https://api.folk.app and all documented resources live under the `/v1` path. Every request is authenticated with a Bearer API key created in workspace settings under "API". API access is a paid-plan (Premium / Enterprise) feature. This document is modeled by API Evangelist from Folk's published OpenAPI schema (https://developer.folk.app/schemas/2025-06-09.json) and reference docs.
+  version: '2025-06-09'
+  contact:
+    name: Folk
+    url: https://www.folk.app
+  termsOfService: https://www.folk.app/legal/terms-and-conditions
+servers:
+- url: https://api.folk.app
+  description: Folk's public API production base URL.
+security:
+- bearerApiKeyAuth: []
+tags:
+- name: Groups
+  description: Groups and their custom field definitions.
+paths:
+  /v1/groups:
+    get:
+      operationId: listGroups
+      tags:
+      - Groups
+      summary: List groups
+      parameters:
+      - $ref: '#/components/parameters/Limit'
+      - $ref: '#/components/parameters/Cursor'
+      responses:
+        '200':
+          description: A paginated list of groups.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Group'
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+  /v1/groups/{groupId}/custom-fields/{entityType}:
+    parameters:
+    - $ref: '#/components/parameters/GroupId'
+    - name: entityType
+      in: path
+      required: true
+      description: The entity type whose custom fields to list.
+      schema:
+        type: string
+        enum:
+        - person
+        - company
+        - object
+    get:
+      operationId: listGroupCustomFields
+      tags:
+      - Groups
+      summary: List group custom fields
+      responses:
+        '200':
+          description: The custom fields defined on the group for the entity type.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CustomField'
+components:
+  schemas:
+    Pagination:
+      type: object
+      description: Cursor-based pagination metadata.
+      properties:
+        nextCursor:
+          type: string
+          nullable: true
+          description: Cursor to pass to retrieve the next page, or null if none.
+    Group:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+    CustomField:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        type:
+          type: string
+          description: The data type of the custom field (e.g. text, number, date, select).
+  parameters:
+    Cursor:
+      name: cursor
+      in: query
+      required: false
+      description: A cursor for pagination across multiple pages of results. Don't include this parameter on the first request; use the `nextCursor` from the previous response.
+      schema:
+        type: string
+    Limit:
+      name: limit
+      in: query
+      required: false
+      description: The number of items to return.
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+    GroupId:
+      name: groupId
+      in: path
+      required: true
+      description: The unique identifier of the group.
+      schema:
+        type: string
+  securitySchemes:
+    bearerApiKeyAuth:
+      type: http
+      scheme: bearer
+      description: 'API key for authentication, sent as `Authorization: Bearer <api_key>`. Keys are created in workspace settings under "API". API access requires a paid Folk plan.'

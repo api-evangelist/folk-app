@@ -1,0 +1,299 @@
+openapi: 3.0.3
+info:
+  title: Folk External Companies API
+  description: Folk's public REST API lets you manage the relationship data in a Folk workspace - people, companies, groups, deals and other custom objects, notes, reminders, and interactions - and subscribe to real-time changes via webhooks. The API is versioned by date (send an `Folk-Version` date such as 2025-06-09); the production base URL is https://api.folk.app and all documented resources live under the `/v1` path. Every request is authenticated with a Bearer API key created in workspace settings under "API". API access is a paid-plan (Premium / Enterprise) feature. This document is modeled by API Evangelist from Folk's published OpenAPI schema (https://developer.folk.app/schemas/2025-06-09.json) and reference docs.
+  version: '2025-06-09'
+  contact:
+    name: Folk
+    url: https://www.folk.app
+  termsOfService: https://www.folk.app/legal/terms-and-conditions
+servers:
+- url: https://api.folk.app
+  description: Folk's public API production base URL.
+security:
+- bearerApiKeyAuth: []
+tags:
+- name: Companies
+  description: Company (organization) records.
+paths:
+  /v1/companies:
+    get:
+      operationId: listCompanies
+      tags:
+      - Companies
+      summary: List companies
+      parameters:
+      - $ref: '#/components/parameters/Limit'
+      - $ref: '#/components/parameters/Cursor'
+      responses:
+        '200':
+          $ref: '#/components/responses/CompanyList'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+    post:
+      operationId: createCompany
+      tags:
+      - Companies
+      summary: Create a company
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompanyInput'
+      responses:
+        '201':
+          $ref: '#/components/responses/CompanySingle'
+  /v1/companies/{companyId}:
+    parameters:
+    - $ref: '#/components/parameters/CompanyId'
+    get:
+      operationId: getCompany
+      tags:
+      - Companies
+      summary: Get a company
+      responses:
+        '200':
+          $ref: '#/components/responses/CompanySingle'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    patch:
+      operationId: updateCompany
+      tags:
+      - Companies
+      summary: Update a company
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompanyInput'
+      responses:
+        '200':
+          $ref: '#/components/responses/CompanySingle'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      operationId: deleteCompany
+      tags:
+      - Companies
+      summary: Delete a company
+      responses:
+        '204':
+          description: The company was deleted.
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /v1/companies/search:
+    post:
+      operationId: searchCompanies
+      tags:
+      - Companies
+      summary: Search for companies
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SearchInput'
+      responses:
+        '200':
+          $ref: '#/components/responses/CompanyList'
+components:
+  schemas:
+    SearchInput:
+      type: object
+      description: Filter payload for a search request.
+      properties:
+        combinator:
+          type: string
+          enum:
+          - and
+          - or
+        filters:
+          type: array
+          items:
+            type: object
+            properties:
+              attribute:
+                type: string
+              operator:
+                type: string
+              value: {}
+        limit:
+          type: integer
+        cursor:
+          type: string
+    Pagination:
+      type: object
+      description: Cursor-based pagination metadata.
+      properties:
+        nextCursor:
+          type: string
+          nullable: true
+          description: Cursor to pass to retrieve the next page, or null if none.
+    CompanyInput:
+      type: object
+      properties:
+        name:
+          type: string
+        emails:
+          type: array
+          items:
+            type: string
+            format: email
+        urls:
+          type: array
+          items:
+            type: string
+        description:
+          type: string
+        groupIds:
+          type: array
+          items:
+            type: string
+        customFieldValues:
+          type: object
+          additionalProperties: true
+    Error:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              example: NOT_FOUND
+            message:
+              type: string
+            documentationUrl:
+              type: string
+    Group:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+    Company:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        emails:
+          type: array
+          items:
+            type: string
+            format: email
+        urls:
+          type: array
+          items:
+            type: string
+        description:
+          type: string
+        groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/Group'
+        customFieldValues:
+          type: object
+          additionalProperties: true
+        createdAt:
+          type: string
+          format: date-time
+  headers:
+    X-RateLimit-Limit:
+      schema:
+        type: integer
+        example: 1000
+      description: The maximum number of requests allowed in the current rate limit window.
+    X-RateLimit-Remaining:
+      schema:
+        type: integer
+        example: 998
+      description: The number of requests remaining in the current rate limit window.
+    X-RateLimit-Reset:
+      schema:
+        type: integer
+        example: 1747322958
+      description: The time the current rate limit window resets, in UTC epoch seconds.
+    Retry-After:
+      schema:
+        type: integer
+        example: 60
+      description: The number of seconds to wait before retrying after a 429 response.
+  responses:
+    CompanyList:
+      description: A paginated list of companies.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Company'
+              pagination:
+                $ref: '#/components/schemas/Pagination'
+    CompanySingle:
+      description: A single company.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '#/components/schemas/Company'
+    NotFound:
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    TooManyRequests:
+      description: The rate limit was exceeded.
+      headers:
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/X-RateLimit-Limit'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/X-RateLimit-Remaining'
+        X-RateLimit-Reset:
+          $ref: '#/components/headers/X-RateLimit-Reset'
+        Retry-After:
+          $ref: '#/components/headers/Retry-After'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  parameters:
+    Cursor:
+      name: cursor
+      in: query
+      required: false
+      description: A cursor for pagination across multiple pages of results. Don't include this parameter on the first request; use the `nextCursor` from the previous response.
+      schema:
+        type: string
+    Limit:
+      name: limit
+      in: query
+      required: false
+      description: The number of items to return.
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+    CompanyId:
+      name: companyId
+      in: path
+      required: true
+      description: The unique identifier of the company.
+      schema:
+        type: string
+  securitySchemes:
+    bearerApiKeyAuth:
+      type: http
+      scheme: bearer
+      description: 'API key for authentication, sent as `Authorization: Bearer <api_key>`. Keys are created in workspace settings under "API". API access requires a paid Folk plan.'
