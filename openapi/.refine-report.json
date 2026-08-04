@@ -1,0 +1,30 @@
+{
+  "provider": "folk-app",
+  "sources": [
+    "folk-app-companies-api-openapi.yml",
+    "folk-app-deals-api-openapi.yml",
+    "folk-app-groups-api-openapi.yml",
+    "folk-app-interactions-api-openapi.yml",
+    "folk-app-notes-api-openapi.yml",
+    "folk-app-people-api-openapi.yml",
+    "folk-app-reminders-api-openapi.yml",
+    "folk-app-users-api-openapi.yml",
+    "folk-app-webhooks-api-openapi.yml"
+  ],
+  "outputs": [
+    "folk-app-companies-api-openapi.yml",
+    "folk-app-deals-api-openapi.yml",
+    "folk-app-groups-api-openapi.yml",
+    "folk-app-interactions-api-openapi.yml",
+    "folk-app-notes-api-openapi.yml",
+    "folk-app-people-api-openapi.yml",
+    "folk-app-reminders-api-openapi.yml",
+    "folk-app-users-api-openapi.yml",
+    "folk-app-webhooks-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [],
+  "skipped": []
+}

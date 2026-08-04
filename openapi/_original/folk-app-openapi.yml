@@ -1,0 +1,1270 @@
+openapi: 3.0.3
+info:
+  title: Folk External API
+  description: >-
+    Folk's public REST API lets you manage the relationship data in a Folk
+    workspace - people, companies, groups, deals and other custom objects,
+    notes, reminders, and interactions - and subscribe to real-time changes via
+    webhooks. The API is versioned by date (send an `Folk-Version` date such as
+    2025-06-09); the production base URL is https://api.folk.app and all
+    documented resources live under the `/v1` path. Every request is
+    authenticated with a Bearer API key created in workspace settings under
+    "API". API access is a paid-plan (Premium / Enterprise) feature. This
+    document is modeled by API Evangelist from Folk's published OpenAPI schema
+    (https://developer.folk.app/schemas/2025-06-09.json) and reference docs.
+  version: '2025-06-09'
+  contact:
+    name: Folk
+    url: https://www.folk.app
+  termsOfService: https://www.folk.app/legal/terms-and-conditions
+servers:
+  - url: https://api.folk.app
+    description: Folk's public API production base URL.
+security:
+  - bearerApiKeyAuth: []
+tags:
+  - name: People
+    description: People (contacts) - the core relationship records in Folk.
+  - name: Companies
+    description: Company (organization) records.
+  - name: Deals
+    description: Deals and other group-scoped custom objects.
+  - name: Groups
+    description: Groups and their custom field definitions.
+  - name: Notes
+    description: Free-form notes attached to contacts.
+  - name: Reminders
+    description: Dated follow-up reminders.
+  - name: Interactions
+    description: Recorded interactions on the relationship timeline.
+  - name: Users
+    description: Workspace users (members).
+  - name: Webhooks
+    description: Real-time change-event subscriptions.
+paths:
+  /v1/people:
+    get:
+      operationId: listPeople
+      tags: [People]
+      summary: List people
+      parameters:
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Cursor'
+        - name: combinator
+          in: query
+          required: false
+          description: The logical operator (and / or) used to combine multiple filters.
+          schema:
+            type: string
+            enum: [and, or]
+        - name: filter
+          in: query
+          required: false
+          description: >-
+            A record of filters to apply, in the form
+            filter[attribute][operator]=value.
+          schema:
+            type: object
+      responses:
+        '200':
+          $ref: '#/components/responses/PersonList'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+    post:
+      operationId: createPerson
+      tags: [People]
+      summary: Create a person
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PersonInput'
+      responses:
+        '201':
+          $ref: '#/components/responses/PersonSingle'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /v1/people/{personId}:
+    parameters:
+      - $ref: '#/components/parameters/PersonId'
+    get:
+      operationId: getPerson
+      tags: [People]
+      summary: Get a person
+      responses:
+        '200':
+          $ref: '#/components/responses/PersonSingle'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    patch:
+      operationId: updatePerson
+      tags: [People]
+      summary: Update a person
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PersonInput'
+      responses:
+        '200':
+          $ref: '#/components/responses/PersonSingle'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      operationId: deletePerson
+      tags: [People]
+      summary: Delete a person
+      responses:
+        '204':
+          description: The person was deleted.
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /v1/people/search:
+    post:
+      operationId: searchPeople
+      tags: [People]
+      summary: Search for people
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SearchInput'
+      responses:
+        '200':
+          $ref: '#/components/responses/PersonList'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /v1/companies:
+    get:
+      operationId: listCompanies
+      tags: [Companies]
+      summary: List companies
+      parameters:
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Cursor'
+      responses:
+        '200':
+          $ref: '#/components/responses/CompanyList'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+    post:
+      operationId: createCompany
+      tags: [Companies]
+      summary: Create a company
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompanyInput'
+      responses:
+        '201':
+          $ref: '#/components/responses/CompanySingle'
+  /v1/companies/{companyId}:
+    parameters:
+      - $ref: '#/components/parameters/CompanyId'
+    get:
+      operationId: getCompany
+      tags: [Companies]
+      summary: Get a company
+      responses:
+        '200':
+          $ref: '#/components/responses/CompanySingle'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    patch:
+      operationId: updateCompany
+      tags: [Companies]
+      summary: Update a company
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompanyInput'
+      responses:
+        '200':
+          $ref: '#/components/responses/CompanySingle'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      operationId: deleteCompany
+      tags: [Companies]
+      summary: Delete a company
+      responses:
+        '204':
+          description: The company was deleted.
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /v1/companies/search:
+    post:
+      operationId: searchCompanies
+      tags: [Companies]
+      summary: Search for companies
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SearchInput'
+      responses:
+        '200':
+          $ref: '#/components/responses/CompanyList'
+  /v1/groups:
+    get:
+      operationId: listGroups
+      tags: [Groups]
+      summary: List groups
+      parameters:
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Cursor'
+      responses:
+        '200':
+          description: A paginated list of groups.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Group'
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+  /v1/groups/{groupId}/custom-fields/{entityType}:
+    parameters:
+      - $ref: '#/components/parameters/GroupId'
+      - name: entityType
+        in: path
+        required: true
+        description: The entity type whose custom fields to list.
+        schema:
+          type: string
+          enum: [person, company, object]
+    get:
+      operationId: listGroupCustomFields
+      tags: [Groups]
+      summary: List group custom fields
+      responses:
+        '200':
+          description: The custom fields defined on the group for the entity type.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CustomField'
+  /v1/groups/{groupId}/{objectType}:
+    parameters:
+      - $ref: '#/components/parameters/GroupId'
+      - $ref: '#/components/parameters/ObjectType'
+    get:
+      operationId: listDeals
+      tags: [Deals]
+      summary: List deals
+      parameters:
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Cursor'
+      responses:
+        '200':
+          $ref: '#/components/responses/ObjectList'
+    post:
+      operationId: createDeal
+      tags: [Deals]
+      summary: Create a deal
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ObjectInput'
+      responses:
+        '201':
+          $ref: '#/components/responses/ObjectSingle'
+  /v1/groups/{groupId}/{objectType}/{objectId}:
+    parameters:
+      - $ref: '#/components/parameters/GroupId'
+      - $ref: '#/components/parameters/ObjectType'
+      - name: objectId
+        in: path
+        required: true
+        description: The unique identifier of the object.
+        schema:
+          type: string
+    get:
+      operationId: getDeal
+      tags: [Deals]
+      summary: Get a deal
+      responses:
+        '200':
+          $ref: '#/components/responses/ObjectSingle'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    patch:
+      operationId: updateDeal
+      tags: [Deals]
+      summary: Update a deal
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ObjectInput'
+      responses:
+        '200':
+          $ref: '#/components/responses/ObjectSingle'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      operationId: deleteDeal
+      tags: [Deals]
+      summary: Delete a deal
+      responses:
+        '204':
+          description: The object was deleted.
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /v1/groups/{groupId}/{objectType}/search:
+    parameters:
+      - $ref: '#/components/parameters/GroupId'
+      - $ref: '#/components/parameters/ObjectType'
+    post:
+      operationId: searchDeals
+      tags: [Deals]
+      summary: Search deals
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SearchInput'
+      responses:
+        '200':
+          $ref: '#/components/responses/ObjectList'
+  /v1/notes:
+    get:
+      operationId: listNotes
+      tags: [Notes]
+      summary: List notes
+      parameters:
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Cursor'
+      responses:
+        '200':
+          $ref: '#/components/responses/NoteList'
+    post:
+      operationId: createNote
+      tags: [Notes]
+      summary: Create a note
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NoteInput'
+      responses:
+        '201':
+          $ref: '#/components/responses/NoteSingle'
+  /v1/notes/{noteId}:
+    parameters:
+      - name: noteId
+        in: path
+        required: true
+        description: The unique identifier of the note.
+        schema:
+          type: string
+    get:
+      operationId: getNote
+      tags: [Notes]
+      summary: Get a note
+      responses:
+        '200':
+          $ref: '#/components/responses/NoteSingle'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    patch:
+      operationId: updateNote
+      tags: [Notes]
+      summary: Update a note
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NoteInput'
+      responses:
+        '200':
+          $ref: '#/components/responses/NoteSingle'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      operationId: deleteNote
+      tags: [Notes]
+      summary: Delete a note
+      responses:
+        '204':
+          description: The note was deleted.
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /v1/reminders:
+    get:
+      operationId: listReminders
+      tags: [Reminders]
+      summary: List reminders
+      parameters:
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Cursor'
+      responses:
+        '200':
+          $ref: '#/components/responses/ReminderList'
+    post:
+      operationId: createReminder
+      tags: [Reminders]
+      summary: Create a reminder
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReminderInput'
+      responses:
+        '201':
+          $ref: '#/components/responses/ReminderSingle'
+  /v1/reminders/{reminderId}:
+    parameters:
+      - name: reminderId
+        in: path
+        required: true
+        description: The unique identifier of the reminder.
+        schema:
+          type: string
+    get:
+      operationId: getReminder
+      tags: [Reminders]
+      summary: Get a reminder
+      responses:
+        '200':
+          $ref: '#/components/responses/ReminderSingle'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    patch:
+      operationId: updateReminder
+      tags: [Reminders]
+      summary: Update a reminder
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReminderInput'
+      responses:
+        '200':
+          $ref: '#/components/responses/ReminderSingle'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      operationId: deleteReminder
+      tags: [Reminders]
+      summary: Delete a reminder
+      responses:
+        '204':
+          description: The reminder was deleted.
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /v1/interactions:
+    post:
+      operationId: createInteraction
+      tags: [Interactions]
+      summary: Create an interaction
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InteractionInput'
+      responses:
+        '201':
+          description: The interaction was recorded.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Interaction'
+  /v1/users:
+    get:
+      operationId: listUsers
+      tags: [Users]
+      summary: List users
+      parameters:
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Cursor'
+      responses:
+        '200':
+          description: A paginated list of workspace users.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User'
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+  /v1/users/me:
+    get:
+      operationId: getCurrentUser
+      tags: [Users]
+      summary: Get the current user
+      responses:
+        '200':
+          $ref: '#/components/responses/UserSingle'
+  /v1/users/{userId}:
+    parameters:
+      - name: userId
+        in: path
+        required: true
+        description: The unique identifier of the user.
+        schema:
+          type: string
+    get:
+      operationId: getUser
+      tags: [Users]
+      summary: Get a user
+      responses:
+        '200':
+          $ref: '#/components/responses/UserSingle'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /v1/webhooks:
+    get:
+      operationId: listWebhooks
+      tags: [Webhooks]
+      summary: List webhooks
+      responses:
+        '200':
+          description: A list of webhooks.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Webhook'
+    post:
+      operationId: createWebhook
+      tags: [Webhooks]
+      summary: Create a webhook
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookInput'
+      responses:
+        '201':
+          description: The webhook was created, including its signing secret.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/WebhookWithSigningSecret'
+  /v1/webhooks/{webhookId}:
+    parameters:
+      - name: webhookId
+        in: path
+        required: true
+        description: The unique identifier of the webhook.
+        schema:
+          type: string
+    get:
+      operationId: getWebhook
+      tags: [Webhooks]
+      summary: Get a webhook
+      responses:
+        '200':
+          description: The requested webhook.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Webhook'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    patch:
+      operationId: updateWebhook
+      tags: [Webhooks]
+      summary: Update a webhook
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookInput'
+      responses:
+        '200':
+          description: The updated webhook.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Webhook'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      operationId: deleteWebhook
+      tags: [Webhooks]
+      summary: Delete a webhook
+      responses:
+        '204':
+          description: The webhook was deleted.
+        '404':
+          $ref: '#/components/responses/NotFound'
+components:
+  securitySchemes:
+    bearerApiKeyAuth:
+      type: http
+      scheme: bearer
+      description: >-
+        API key for authentication, sent as `Authorization: Bearer <api_key>`.
+        Keys are created in workspace settings under "API". API access requires
+        a paid Folk plan.
+  parameters:
+    Limit:
+      name: limit
+      in: query
+      required: false
+      description: The number of items to return.
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+    Cursor:
+      name: cursor
+      in: query
+      required: false
+      description: >-
+        A cursor for pagination across multiple pages of results. Don't include
+        this parameter on the first request; use the `nextCursor` from the
+        previous response.
+      schema:
+        type: string
+    PersonId:
+      name: personId
+      in: path
+      required: true
+      description: The unique identifier of the person.
+      schema:
+        type: string
+    CompanyId:
+      name: companyId
+      in: path
+      required: true
+      description: The unique identifier of the company.
+      schema:
+        type: string
+    GroupId:
+      name: groupId
+      in: path
+      required: true
+      description: The unique identifier of the group.
+      schema:
+        type: string
+    ObjectType:
+      name: objectType
+      in: path
+      required: true
+      description: >-
+        The type of group-scoped object, e.g. "deals" for the built-in deal
+        object or a custom object type defined on the group.
+      schema:
+        type: string
+  headers:
+    X-RateLimit-Limit:
+      schema:
+        type: integer
+        example: 1000
+      description: The maximum number of requests allowed in the current rate limit window.
+    X-RateLimit-Remaining:
+      schema:
+        type: integer
+        example: 998
+      description: The number of requests remaining in the current rate limit window.
+    X-RateLimit-Reset:
+      schema:
+        type: integer
+        example: 1747322958
+      description: The time the current rate limit window resets, in UTC epoch seconds.
+    Retry-After:
+      schema:
+        type: integer
+        example: 60
+      description: The number of seconds to wait before retrying after a 429 response.
+  responses:
+    NotFound:
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    TooManyRequests:
+      description: The rate limit was exceeded.
+      headers:
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/X-RateLimit-Limit'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/X-RateLimit-Remaining'
+        X-RateLimit-Reset:
+          $ref: '#/components/headers/X-RateLimit-Reset'
+        Retry-After:
+          $ref: '#/components/headers/Retry-After'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    PersonSingle:
+      description: A single person.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '#/components/schemas/Person'
+    PersonList:
+      description: A paginated list of people.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Person'
+              pagination:
+                $ref: '#/components/schemas/Pagination'
+    CompanySingle:
+      description: A single company.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '#/components/schemas/Company'
+    CompanyList:
+      description: A paginated list of companies.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Company'
+              pagination:
+                $ref: '#/components/schemas/Pagination'
+    ObjectSingle:
+      description: A single group-scoped object (deal or custom object).
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '#/components/schemas/CustomObject'
+    ObjectList:
+      description: A paginated list of group-scoped objects.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CustomObject'
+              pagination:
+                $ref: '#/components/schemas/Pagination'
+    NoteSingle:
+      description: A single note.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '#/components/schemas/Note'
+    NoteList:
+      description: A paginated list of notes.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Note'
+              pagination:
+                $ref: '#/components/schemas/Pagination'
+    ReminderSingle:
+      description: A single reminder.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '#/components/schemas/Reminder'
+    ReminderList:
+      description: A paginated list of reminders.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Reminder'
+              pagination:
+                $ref: '#/components/schemas/Pagination'
+    UserSingle:
+      description: A single user.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '#/components/schemas/User'
+  schemas:
+    Pagination:
+      type: object
+      description: Cursor-based pagination metadata.
+      properties:
+        nextCursor:
+          type: string
+          nullable: true
+          description: Cursor to pass to retrieve the next page, or null if none.
+    Error:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              example: NOT_FOUND
+            message:
+              type: string
+            documentationUrl:
+              type: string
+    EmailAddress:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+    Person:
+      type: object
+      properties:
+        id:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        fullName:
+          type: string
+        emails:
+          type: array
+          items:
+            type: string
+            format: email
+        phones:
+          type: array
+          items:
+            type: string
+        urls:
+          type: array
+          items:
+            type: string
+        jobTitle:
+          type: string
+        description:
+          type: string
+        companies:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              name:
+                type: string
+        groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/Group'
+        customFieldValues:
+          type: object
+          additionalProperties: true
+        createdAt:
+          type: string
+          format: date-time
+    PersonInput:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        emails:
+          type: array
+          items:
+            type: string
+            format: email
+        phones:
+          type: array
+          items:
+            type: string
+        urls:
+          type: array
+          items:
+            type: string
+        jobTitle:
+          type: string
+        description:
+          type: string
+        companyIds:
+          type: array
+          items:
+            type: string
+        groupIds:
+          type: array
+          items:
+            type: string
+        customFieldValues:
+          type: object
+          additionalProperties: true
+    Company:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        emails:
+          type: array
+          items:
+            type: string
+            format: email
+        urls:
+          type: array
+          items:
+            type: string
+        description:
+          type: string
+        groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/Group'
+        customFieldValues:
+          type: object
+          additionalProperties: true
+        createdAt:
+          type: string
+          format: date-time
+    CompanyInput:
+      type: object
+      properties:
+        name:
+          type: string
+        emails:
+          type: array
+          items:
+            type: string
+            format: email
+        urls:
+          type: array
+          items:
+            type: string
+        description:
+          type: string
+        groupIds:
+          type: array
+          items:
+            type: string
+        customFieldValues:
+          type: object
+          additionalProperties: true
+    CustomObject:
+      type: object
+      description: >-
+        A group-scoped object such as a deal or a custom object type, whose
+        fields are defined by the group's custom field schema.
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        groupId:
+          type: string
+        customFieldValues:
+          type: object
+          additionalProperties: true
+        createdAt:
+          type: string
+          format: date-time
+    ObjectInput:
+      type: object
+      properties:
+        name:
+          type: string
+        customFieldValues:
+          type: object
+          additionalProperties: true
+    Group:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+    CustomField:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        type:
+          type: string
+          description: The data type of the custom field (e.g. text, number, date, select).
+    Note:
+      type: object
+      properties:
+        id:
+          type: string
+        content:
+          type: string
+        entityType:
+          type: string
+          enum: [person, company, object]
+        entityId:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+    NoteInput:
+      type: object
+      required: [content]
+      properties:
+        content:
+          type: string
+        entityType:
+          type: string
+          enum: [person, company, object]
+        entityId:
+          type: string
+    Reminder:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        dueAt:
+          type: string
+          format: date-time
+        completed:
+          type: boolean
+        entityType:
+          type: string
+          enum: [person, company, object]
+        entityId:
+          type: string
+        assigneeId:
+          type: string
+    ReminderInput:
+      type: object
+      required: [title]
+      properties:
+        title:
+          type: string
+        dueAt:
+          type: string
+          format: date-time
+        entityType:
+          type: string
+          enum: [person, company, object]
+        entityId:
+          type: string
+        assigneeId:
+          type: string
+    Interaction:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          description: The kind of interaction, e.g. email, call, or meeting.
+        entityType:
+          type: string
+          enum: [person, company, object]
+        entityId:
+          type: string
+        occurredAt:
+          type: string
+          format: date-time
+    InteractionInput:
+      type: object
+      required: [type, entityId]
+      properties:
+        type:
+          type: string
+        entityType:
+          type: string
+          enum: [person, company, object]
+        entityId:
+          type: string
+        occurredAt:
+          type: string
+          format: date-time
+        note:
+          type: string
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+          format: email
+        role:
+          type: string
+    SearchInput:
+      type: object
+      description: Filter payload for a search request.
+      properties:
+        combinator:
+          type: string
+          enum: [and, or]
+        filters:
+          type: array
+          items:
+            type: object
+            properties:
+              attribute:
+                type: string
+              operator:
+                type: string
+              value: {}
+        limit:
+          type: integer
+        cursor:
+          type: string
+    Webhook:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+          maxLength: 255
+        targetUrl:
+          type: string
+          format: uri
+          maxLength: 2048
+        subscribedEvents:
+          type: array
+          items:
+            $ref: '#/components/schemas/WebhookSubscribedEvent'
+        createdAt:
+          type: string
+          format: date-time
+    WebhookWithSigningSecret:
+      allOf:
+        - $ref: '#/components/schemas/Webhook'
+        - type: object
+          properties:
+            signingSecret:
+              type: string
+              description: Secret used to verify the authenticity of webhook payloads.
+    WebhookInput:
+      type: object
+      required: [targetUrl, subscribedEvents]
+      properties:
+        name:
+          type: string
+          maxLength: 255
+          example: My app integration
+        targetUrl:
+          type: string
+          format: uri
+          maxLength: 2048
+          description: A publicly accessible HTTP or HTTPS URL to receive events.
+          example: https://my-app.com/webhook
+        subscribedEvents:
+          type: array
+          items:
+            $ref: '#/components/schemas/WebhookSubscribedEvent'
+    WebhookSubscribedEvent:
+      type: object
+      properties:
+        eventType:
+          type: string
+          enum:
+            - person.created
+            - person.updated
+            - person.deleted
+            - person.groups_updated
+            - person.workspace_interaction_metadata_updated
+            - company.created
+            - company.updated
+            - company.deleted
+            - company.groups_updated
+            - object.created
+            - object.updated
+            - object.deleted
+            - note.created
+            - note.updated
+            - note.deleted
+            - reminder.created
+            - reminder.updated
+            - reminder.deleted
+            - reminder.triggered
+        filter:
+          type: object
+          properties:
+            groupId:
+              type: string
+              maxLength: 255
